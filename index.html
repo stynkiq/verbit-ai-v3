@@ -90,29 +90,24 @@
     </div>
   </div>
 
-  <script>
-    const messagesDiv = document.getElementById("messages");
+<script>
+  function sendMessage() {
+    const input = document.getElementById("userInput");
+    const text = input.value.trim();
+    if (!text) return;
+    addMessage(text, "user");
+    input.value = "";
 
-    function addMessage(text, sender) {
-      const msg = document.createElement("div");
-      msg.classList.add("message", sender);
-      msg.textContent = text;
-      messagesDiv.appendChild(msg);
-      messagesDiv.scrollTop = messagesDiv.scrollHeight;
-    }
-
-    function sendMessage() {
-      const input = document.getElementById("userInput");
-      const text = input.value.trim();
-      if (!text) return;
-      addMessage(text, "user");
-      input.value = "";
-
-      // Fake bot response for demo
-      setTimeout(() => {
-        addMessage("VERBIT says: " + text.split("").reverse().join(""), "bot");
-      }, 500);
-    }
-  </script>
+    // Real backend call to Render
+    fetch("https://your-render-service.onrender.com/api/chat", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ message: text })
+    })
+    .then(res => res.json())
+    .then(data => addMessage("VERBIT says: " + data.reply, "bot"))
+    .catch(err => addMessage("Error: " + err, "bot"));
+  }
+</script>
 </body>
 </html>
